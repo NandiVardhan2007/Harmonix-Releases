@@ -51,7 +51,7 @@
 Install or update Harmonix on Windows instantly by running the following one-line command in Windows PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/NandiVardhan2007/Harmonix/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/NandiVardhan2007/Harmonix-Releases/main/install.ps1 | iex
 ```
 
 The script automatically queries the latest public release from `NandiVardhan2007/Harmonix-Releases`, downloads `Harmonix-Setup.exe`, and initiates the installation wizard.
