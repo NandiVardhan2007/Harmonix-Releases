@@ -1,9 +1,10 @@
 # ==============================================================================
 # Harmonix Music - Windows Installer Script
-# One-line execution: irm https://raw.githubusercontent.com/NandiVardhan2007/Harmonix/main/install.ps1 | iex
+# One-line execution: irm https://raw.githubusercontent.com/NandiVardhan2007/Harmonix-Releases/main/install.ps1 | iex
 # ==============================================================================
 
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 
 Write-Host ""
 Write-Host "  ================================================================" -ForegroundColor Cyan
@@ -27,7 +28,7 @@ Write-Host "  [1/3] Checking latest release from $RepoPrimary..." -ForegroundCol
 
 $release = $null
 try {
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls13
     $headers = @{ "User-Agent" = "Harmonix-PowerShell-Installer" }
     $response = Invoke-RestMethod -Uri $ApiUrl -Headers $headers -Method Get -TimeoutSec 15
     $release = $response
@@ -62,24 +63,64 @@ if (-not $installerAsset) {
 
 $downloadUrl = $installerAsset.browser_download_url
 $fileName = $installerAsset.name
+$expectedSize = $installerAsset.size
 $tempDir = [System.IO.Path]::GetTempPath()
 $targetPath = Join-Path $tempDir "Harmonix-Setup.exe"
 
-# 3. Download Installer
-Write-Host "  [2/3] Downloading $fileName ($([math]::Round($installerAsset.size / 1MB, 1)) MB)..." -ForegroundColor Yellow
+# 3. Download Installer with Resilient Streaming & Integrity Verification
+Write-Host "  [2/3] Downloading $fileName ($([math]::Round($expectedSize / 1MB, 1)) MB)..." -ForegroundColor Yellow
 
-try {
-    # Remove older cached installer if present
-    if (Test-Path $targetPath) {
-        Remove-Item $targetPath -Force -ErrorAction SilentlyContinue
+# Remove older or corrupted cached installer if present
+if (Test-Path $targetPath) {
+    Remove-Item $targetPath -Force -ErrorAction SilentlyContinue
+}
+
+$downloadSuccess = $false
+$curlCmd = Get-Command "curl.exe" -ErrorAction SilentlyContinue
+
+if ($curlCmd) {
+    try {
+        & $curlCmd.Source -fL --retry 3 --retry-delay 2 --progress-bar -o $targetPath $downloadUrl
+        if ($LASTEXITCODE -eq 0 -and (Test-Path $targetPath)) {
+            $downloadSuccess = $true
+        }
+    } catch {
+        Write-Host "        curl download failed, falling back to .NET web client..." -ForegroundColor DarkGray
     }
+}
 
-    Invoke-WebRequest -Uri $downloadUrl -OutFile $targetPath -UseBasicParsing
-    Write-Host "        Download completed successfully." -ForegroundColor Green
-} catch {
-    Write-Error "Download failed: $($_.Exception.Message)"
+if (-not $downloadSuccess) {
+    try {
+        $webClient = New-Object System.Net.WebClient
+        $webClient.Headers.Add("User-Agent", "Harmonix-PowerShell-Installer")
+        $webClient.DownloadFile($downloadUrl, $targetPath)
+        $webClient.Dispose()
+        $downloadSuccess = $true
+    } catch {
+        try {
+            Invoke-WebRequest -Uri $downloadUrl -OutFile $targetPath -UseBasicParsing -TimeoutSec 300
+            $downloadSuccess = $true
+        } catch {
+            Write-Error "Download failed: $($_.Exception.Message)"
+            exit 1
+        }
+    }
+}
+
+# Integrity Gate: Verify file exists and matches size
+if (-not (Test-Path $targetPath)) {
+    Write-Error "Installer file was not created. Please check your internet connection and try again."
     exit 1
 }
+
+$downloadedFile = Get-Item $targetPath -ErrorAction Stop
+if ($expectedSize -and $downloadedFile.Length -lt ($expectedSize * 0.95)) {
+    Remove-Item $targetPath -Force -ErrorAction SilentlyContinue
+    Write-Error "Installer integrity check failed: downloaded $($downloadedFile.Length) bytes, expected $expectedSize bytes. Incomplete download removed. Please run the command again."
+    exit 1
+}
+
+Write-Host "        Download completed successfully ($([math]::Round($downloadedFile.Length / 1MB, 1)) MB)." -ForegroundColor Green
 
 # 4. Launch Installer
 Write-Host "  [3/3] Launching Harmonix Setup..." -ForegroundColor Yellow
