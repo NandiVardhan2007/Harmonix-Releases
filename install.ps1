@@ -27,6 +27,11 @@ $ApiUrl = "https://api.github.com/repos/$RepoPrimary/releases/latest"
 Write-Host "  [1/3] Checking latest release from $RepoPrimary..." -ForegroundColor Yellow
 
 $release = $null
+$version = "latest"
+$downloadUrl = "https://github.com/$RepoPrimary/releases/latest/download/Harmonix-Setup.exe"
+$fileName = "Harmonix-Setup.exe"
+$expectedSize = $null
+
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls13
     $headers = @{ "User-Agent" = "Harmonix-PowerShell-Installer" }
@@ -38,31 +43,31 @@ try {
         $FallbackUrl = "https://api.github.com/repos/$RepoFallback/releases/latest"
         $release = Invoke-RestMethod -Uri $FallbackUrl -Headers $headers -Method Get -TimeoutSec 15
     } catch {
-        Write-Error "Failed to fetch release information from GitHub: $($_.Exception.Message)"
-        exit 1
+        Write-Host "        Release API query unavailable, proceeding with direct CDN channel..." -ForegroundColor DarkGray
     }
 }
 
-$version = $release.tag_name
-Write-Host "        Latest version detected: $version" -ForegroundColor Green
+if ($release) {
+    $version = $release.tag_name
+    Write-Host "        Latest version detected: $version" -ForegroundColor Green
 
-# 2. Locate Windows Installer Asset (.exe)
-$installerAsset = $release.assets | Where-Object {
-    $_.name -match '^Harmonix[-_ ]Setup.*\.exe$' -or ($_.name -like "*.exe" -and $_.name -like "*Setup*")
-} | Select-Object -First 1
+    # Locate Windows Installer Asset (.exe)
+    $installerAsset = $release.assets | Where-Object {
+        $_.name -match '^Harmonix[-_ ]Setup.*\.exe$' -or ($_.name -like "*.exe" -and $_.name -like "*Setup*")
+    } | Select-Object -First 1
 
-if (-not $installerAsset) {
-    # Fallback to any .exe asset
-    $installerAsset = $release.assets | Where-Object { $_.name -like "*.exe" } | Select-Object -First 1
+    if (-not $installerAsset) {
+        $installerAsset = $release.assets | Where-Object { $_.name -like "*.exe" } | Select-Object -First 1
+    }
+
+    if ($installerAsset) {
+        $downloadUrl = $installerAsset.browser_download_url
+        $fileName = $installerAsset.name
+        $expectedSize = $installerAsset.size
+    }
+} else {
+    Write-Host "        Using latest release direct channel" -ForegroundColor Green
 }
-
-if (-not $installerAsset) {
-    Write-Error "No Windows installer (.exe) was found in release $version. Please download manually from: $($release.html_url)"
-    exit 1
-}
-
-$downloadUrl = $installerAsset.browser_download_url
-$fileName = $installerAsset.name
 $expectedSize = $installerAsset.size
 $tempDir = [System.IO.Path]::GetTempPath()
 $targetPath = Join-Path $tempDir "Harmonix-Setup.exe"

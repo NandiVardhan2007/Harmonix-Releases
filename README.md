@@ -5,19 +5,19 @@
 # Harmonix
 
 **Multi-Source HD Music Streaming · Synced Live Lyrics · AI Sing-Along · Offline Downloads**  
-*Native Android App · Electron Desktop (Windows) · Encrypted Cloud Sync & Universal Sharing*
+*Native Android App · Electron Desktop (Linux & Windows) · Encrypted Cloud Sync & Universal Sharing*
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.1-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Electron](https://img.shields.io/badge/Electron-33-47848F?style=flat-square&logo=electron&logoColor=white)](https://www.electronjs.org)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack_Compose-Material_3-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-[![Platform](https://img.shields.io/badge/Android_%26_Windows-3DDC84?style=flat-square&logo=android&logoColor=white)](https://www.android.com)
+[![Platform](https://img.shields.io/badge/Android_%26_Windows_%26_Linux-3DDC84?style=flat-square&logo=linux&logoColor=white)](https://github.com/NandiVardhan2007/Harmonix)
 [![Release](https://img.shields.io/github/v/release/NandiVardhan2007/Harmonix-Releases?style=flat-square&color=FF0033)](https://github.com/NandiVardhan2007/Harmonix-Releases/releases/latest)
 [![License](https://img.shields.io/badge/License-Proprietary-red?style=flat-square)](LICENSE)
 
 <br/>
 
-[**Download**](#download) · [**Quick Install (Windows)**](#quick-install-windows-powershell) · [**Features**](#features) · [**Desktop Version**](#harmonix-desktop-electron) · [**Tech Stack**](#tech-stack) · [**Build**](#build-from-source) · [**License**](#license)
+[**Download**](#download) · [**Quick Install**](#quick-install) · [**Features**](#features) · [**Desktop Version**](#harmonix-desktop-electron) · [**Tech Stack**](#tech-stack) · [**Build**](#build-from-source) · [**License**](#license)
 
 </div>
 
@@ -36,25 +36,53 @@
 <a href="https://github.com/NandiVardhan2007/Harmonix-Releases/releases/latest/download/Harmonix-Setup.exe">
 <img src="https://img.shields.io/badge/Windows-Download_Setup.exe-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows Setup" height="44"/>
 </a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://github.com/NandiVardhan2007/Harmonix-Releases/releases/latest/download/Harmonix-Linux.AppImage">
+<img src="https://img.shields.io/badge/Linux-Download_AppImage-FCC624?style=for-the-badge&logo=linux&logoColor=black" alt="Linux AppImage" height="44"/>
+</a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://github.com/NandiVardhan2007/Harmonix-Releases/releases/latest/download/Harmonix-Linux.deb">
+<img src="https://img.shields.io/badge/Linux-Download_.deb-E95420?style=for-the-badge&logo=ubuntu&logoColor=white" alt="Linux Debian/Ubuntu" height="44"/>
+</a>
 
 </div>
 
 <br/>
 
 - **Android Mobile**: Native application built with **Jetpack Compose** and **Media3**. Requires **Android 7.0 (API 24)** or newer. Sideload the APK on your device; the built-in SHA-256 verified auto-updater checks the public releases repository and keeps your installation up to date.
-- **Windows Desktop**: Native Electron JS desktop application featuring hardware-accelerated Web Audio DSP, frameless glassmorphism design, system media key controls, camera QR code mobile linking, and automated GitHub release update verification.
+- **Windows Desktop**: Native Electron JS desktop application featuring hardware-accelerated Web Audio DSP, frameless glassmorphism design, system media key controls, camera QR code mobile linking, and automated GitHub release update verification (`Harmonix-Setup.exe`).
+- **Linux Desktop**: Universal standalone **AppImage** (runs on Ubuntu, Debian, Arch, Fedora, openSUSE, Linux Mint, Pop!_OS, etc.) and native **.deb** package with complete desktop integration, launcher icons, system media key controls, and built-in release updater (`Harmonix-Linux.AppImage` & `Harmonix-Linux.deb`).
 
 ---
 
-## Quick Install (Windows PowerShell)
+## Quick Install
 
-Install or update Harmonix on Windows instantly by running the following one-line command in Windows PowerShell:
+### Linux (One-Line Terminal Install)
 
+Install or update Harmonix on any Linux distribution with a single command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/NandiVardhan2007/Harmonix-Releases/main/install.sh | bash
+```
+
+The script fetches the latest release from `NandiVardhan2007/Harmonix-Releases`, installs the AppImage into `~/.local/bin/harmonix`, creates desktop launcher entries and high-resolution icons, and integrates with your application menu. To install the native Debian `.deb` package instead, run:
+```bash
+curl -fsSL https://raw.githubusercontent.com/NandiVardhan2007/Harmonix-Releases/main/install.sh | bash -s -- --deb
+```
+
+### Windows (One-Line Install)
+
+**In Windows PowerShell:**
 ```powershell
 irm https://raw.githubusercontent.com/NandiVardhan2007/Harmonix-Releases/main/install.ps1 | iex
 ```
 
-The script automatically queries the latest public release from `NandiVardhan2007/Harmonix-Releases`, downloads `Harmonix-Setup.exe`, and initiates the installation wizard.
+**In Windows Command Prompt (CMD):**
+```cmd
+powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/NandiVardhan2007/Harmonix-Releases/main/install.ps1 | iex"
+```
+
+The script queries the latest public release from `NandiVardhan2007/Harmonix-Releases`, downloads `Harmonix-Setup.exe` with resume/integrity checks, and initiates the setup wizard.
 
 ---
 
@@ -184,9 +212,17 @@ npm run build
 npm run electron
 ```
 
+To package the Linux standalone AppImage and Debian package:
+```bash
+npm run dist:linux
+```
+Outputs are generated in `desktop/release/`:
+- `Harmonix-Linux.AppImage` (Universal portable binary)
+- `Harmonix-Linux.deb` (Native Debian/Ubuntu package)
+
 To package the Windows setup installer (`Harmonix-Setup.exe`):
 ```bash
-npm run dist
+npm run dist:win
 ```
 
 ### Backend
