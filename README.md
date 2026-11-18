@@ -5,10 +5,12 @@
 # Harmonix
 
 **Multi-Source HD Music Streaming · Synced Live Lyrics · AI Sing-Along · Offline Downloads**  
-*Native Android App · Electron Desktop (Linux & Windows) · Encrypted Cloud Sync & Universal Sharing*
+*Native Android App · Rust & C++ Accelerated Desktop (Windows & Linux) · Encrypted Cloud Sync & Universal Sharing*
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.1-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
-[![Electron](https://img.shields.io/badge/Electron-33-47848F?style=flat-square&logo=electron&logoColor=white)](https://www.electronjs.org)
+[![Rust](https://img.shields.io/badge/Rust-2024_Edition-DEA584?style=flat-square&logo=rust&logoColor=white)](https://www.rust-lang.org)
+[![C++](https://img.shields.io/badge/C++-20_Accelerated-00599C?style=flat-square&logo=cplusplus&logoColor=white)](https://isocpp.org)
+[![Tauri](https://img.shields.io/badge/Tauri-v2-24C8D8?style=flat-square&logo=tauri&logoColor=white)](https://tauri.app)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack_Compose-Material_3-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
 [![Platform](https://img.shields.io/badge/Android_%26_Windows_%26_Linux-3DDC84?style=flat-square&logo=linux&logoColor=white)](https://github.com/NandiVardhan2007/Harmonix)
@@ -149,11 +151,12 @@ Mobile (Android)
   State & DI       ViewModel + StateFlow · Hilt
   Storage          DataStore Preferences · Room · SharedPreferences
 
-Desktop (Windows)
-  Runtime          Electron 33 · Node.js 20+
-  Frontend         React 18 · Vite · Tailwind CSS v4
+Desktop (Windows & Linux)
+  Architecture     Tauri v2 + Rust 2024 Edition (with Electron backwards compatibility)
+  Native Accel     C++20 SIMD & Bitwise Acceleration (FIPS DES-ECB, Digital Biquad EQ, std::filesystem scanner)
+  Frontend         React 18 · Vite · Tailwind CSS
   Audio Engine     Web Audio API (10-Band Parametric EQ & -14 LUFS Limiter)
-  Crypto           CryptoJS DES-ECB Decryption Engine
+  SMTC / Island    Windows SMTC MediaSession & Top Dynamic Island Synced Lyrics Engine
 
 Cloud & Backend
   API Server       Node.js 20+ · Express 4 (ES modules) · Helmet
