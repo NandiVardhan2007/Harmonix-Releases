@@ -13,7 +13,7 @@
 [![Tauri](https://img.shields.io/badge/Tauri-v2-24C8D8?style=flat-square&logo=tauri&logoColor=white)](https://tauri.app)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![Jetpack Compose](https://img.shields.io/badge/Jetpack_Compose-Material_3-4285F4?style=flat-square&logo=jetpackcompose&logoColor=white)](https://developer.android.com/jetpack/compose)
-[![Platform](https://img.shields.io/badge/Android_%26_Windows_%26_Linux-3DDC84?style=flat-square&logo=linux&logoColor=white)](https://github.com/NandiVardhan2007/Harmonix)
+[![Platform](https://img.shields.io/badge/Android_%26_Windows_%26_Linux-3DDC84?style=flat-square&logo=linux&logoColor=white)](https://github.com/NandiVardhan2007/Harmonix-Releases)
 [![Release](https://img.shields.io/github/v/release/NandiVardhan2007/Harmonix-Releases?style=flat-square&color=FF0033)](https://github.com/NandiVardhan2007/Harmonix-Releases/releases/latest)
 [![License](https://img.shields.io/badge/License-Proprietary-red?style=flat-square)](LICENSE)
 
@@ -152,7 +152,7 @@ The script queries the latest public release from `NandiVardhan2007/Harmonix-Rel
 
 ## Harmonix Desktop (Electron)
 
-The desktop edition located in [`desktop/`](desktop/) provides a full-featured desktop experience matching the mobile version:
+The Harmonix desktop edition provides a full-featured desktop experience matching the mobile version:
 
 - **Local HTTP Origin (`http://localhost:42800`)**: Eliminates `file:///` restrictions, enabling standard Google OAuth popups and Firebase Authentication.
 - **Horizontal Shelf Smooth Scrolling**: Converts vertical mouse wheel deltas (`deltaY`) to smooth horizontal scroll (`scrollLeft`) with floating chevron navigation controls.
