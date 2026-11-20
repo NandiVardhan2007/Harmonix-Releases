@@ -90,28 +90,49 @@ The script queries the latest public release from `NandiVardhan2007/Harmonix-Rel
 
 ## Features
 
-### Core Audio & Playback Engine
+### Liquid Glass & Obsidian Design System
 
 | Feature | Description |
 |:---|:---|
+| **G2 Continuous Squircles** | Curvature-continuous squircle geometry ($k = 1.528665f$) eliminating harsh tangent breaks across cards, sheets, and artwork |
+| **Liquid Glass Physics** | API 31+ frosted background blur, dynamic interactive specular sheen (`BlendMode.Plus`), and spring-damped tactile motion |
+| **6-Tier Obsidian Hierarchy** | True deep Obsidian surfaces (`#0C0C0E` base up to `#232328`) paired with a dedicated 0-nit Pure AMOLED black mode |
+| **SchemeNeutral Palette** | Color-clamped dynamic tonal palettes ($8.0\text{–}16.0$ chroma) preventing oversaturated clash on vivid album art |
+| **600ms Crossfades** | Seamless animated crossfades across dynamic color shifts and background transitions |
+
+---
+
+### Audiophile C++20 Audio Pipeline (`libharmonix_audio.so`)
+
+| Feature | Description |
+|:---|:---|
+| **15-Band Parametric EQ** | Transposed Direct Form II biquad IIR filters with atomic lock-free coefficient syncing, zero phase distortion, and TPDF dither |
+| **Tri-Band AutoMix Crossover** | 4th-order (24 dB/octave) Linkwitz-Riley crossover ($120\text{ Hz}$ & $3800\text{ Hz}$) with sub-bass swapping and smooth soft clipping |
+| **100Hz Real-Time Music Haptics** | Real-time PCM transient detector isolating kicks and bass drops for synchronized device haptic vibrations |
 | **Multi-Source Streaming** | Aggregates JioSaavn (320kbps lossless with DES-ECB decryption), Audius, and YouTube Music |
 | **0ms Gapless Prefetching** | High-performance audio engine pre-resolving and caching the next song ahead of time |
-| **Dynamic Color Theming** | Ambient UI dynamically extracts artwork palettes and renders smooth gradient meshes |
-| **Fluid Navigation & Shelves** | Spotify & Apple Music inspired artwork swipe gestures and smooth horizontal shelf carousels |
 | **Bluetooth Audio Routing** | Instant hardware detection for Bluetooth A2DP headsets, SCO, and system audio outputs |
-| **Multi-Band Equalizer** | Native parametric EQ with Bass Boost, Virtualizer, Loudness Enhancer, and custom presets |
 | **Offline Downloads** | Download tracks up to 320kbps with embedded cover artwork, metadata tags, and LRC lyrics |
 | **Smart Infinite Queue** | Taste-aware autoplay algorithm recommending similar tracks when your queue finishes |
 
 ---
 
-### Synchronized Lyrics & AI Sing-Along
+### Lyrics, Visual Media & AGSL Shaders
 
-- **Auto-Adjusting Home Widget (Android)**: Responsive launcher widget (2x1, 4x1, 2x2, 4x2, 5x2, 4x3) featuring the signature **"Long Wing"** mode with real-time synchronized live lyrics and 1-tap jump to full-screen lyrics.
+- **Word-by-Word TTML Karaoke Canvas**: Microsecond-accurate syllable-by-syllable lyric reveal with smooth vertical syllable lift, soft glow, and `DST_IN` feathered gradient reveal mask.
+- **GPU AGSL Fluid Mesh Shader**: Android 13+ (API 33) hardware-accelerated dual-axis quadratic twist distortion and orbital canvas for fluid ambient artwork backgrounds.
+- **Headless Video Canvas**: Hardware TextureView player rendering seamlessly looping video canvases without UI overhead.
 - **Multilingual Phonetic Sing-Along**: Transliterates songs in 20 languages into authentic native script characters (Telugu `తెలుగు`, Hindi `हिन्दी`, Tamil `தமிழ்`, Kannada `ಕನ್ನಡ`, Malayalam `മലയാളം`, etc.) as well as English Latin romanization.
-- **Dynamic Timing Calibration**: Visual live sync offset adjustment (±ms) with local calibration memory per track.
-- **Interactive Tap-to-Seek**: Tap any lyric line to jump the audio playback directly to that timestamp.
-- **Lyrics Cards**: Create and export lyric quote cards with custom colors and artwork backgrounds.
+- **Auto-Adjusting Home Widget**: Responsive launcher widget featuring the signature **"Long Wing"** mode with real-time synchronized live lyrics and 1-tap jump to full-screen lyrics.
+
+---
+
+### Harmonix Jam (Listen Together)
+
+- **Real-Time WebSocket Rooms**: Listen synchronously with friends anywhere in the world over high-speed WebSocket channels (`wss://jam.clashgram.org/ws`).
+- **Synchronized Playback**: Sub-millisecond drift compensation with instant host-to-guest play, pause, seek, and track change replication.
+- **Collaborative Queues**: Shared room queue allowing participants to add, reorder, and vote on upcoming songs in collaborative mode.
+- **In-Room Live Chat & QR Sharing**: Integrated real-time room chat with participant role badges (Host, Co-Host, Listener) and instant QR code sharing.
 
 ---
 
@@ -144,12 +165,14 @@ The desktop edition located in [`desktop/`](desktop/) provides a full-featured d
 
 ```
 Mobile (Android)
-  Language         Kotlin 2.1
-  UI Engine        Jetpack Compose · Material 3 · Motion & Navigation Compose
-  Audio Engine     Media3 (ExoPlayer + MediaSessionService)
+  Language         Kotlin 2.1 · C++20 (Android NDK r26b)
+  UI Engine        Jetpack Compose · Material 3 · Liquid Glass · AGSL Shaders
+  Audio Engine     Media3 (ExoPlayer) + libharmonix_audio.so (Biquad EQ & Tri-Band AutoMix)
+  Haptics          100Hz Biquad Real-Time Music Haptics
   Scanner          Google Play Services Code Scanner (Auto-capture ML Kit)
   State & DI       ViewModel + StateFlow · Hilt
   Storage          DataStore Preferences · Room · SharedPreferences
+  Listen Together  WebSocket Jam Protocol (Real-Time Playback & Collaborative Queue)
 
 Desktop (Windows & Linux)
   Architecture     Tauri v2 + Rust 2024 Edition (with Electron backwards compatibility)
@@ -174,11 +197,12 @@ Harmonix/
 ├── install.ps1              # One-line PowerShell installer for Windows
 ├── android-native/          # Native Android app (Jetpack Compose & Media3)
 │   └── app/src/main/
+│       ├── cpp/             # C++20 DSP Engine (15-band EQ, Tri-band Linkwitz-Riley AutoMix)
 │       ├── java/com/nandu/harmonix/
-│       │   ├── data/        # Data Layer (MusicSource, Saavn, YouTube, Audius, SyncRepository)
-│       │   ├── playback/    # Media3 session service, PlaybackManager, Equalizer, Cast
+│       │   ├── data/        # Data Layer (MusicSource, Jam, Saavn, YouTube, Audius, SyncRepository)
+│       │   ├── playback/    # Media3 session service, NativeAudio JNI, MusicHaptics, JamSync
 │       │   ├── widget/      # Responsive Home Widget & Real-Time Live Lyrics Engine
-│       │   └── ui/          # Compose UI (home, search, player, lyrics, settings, update)
+│       │   └── ui/          # Compose UI (Liquid Glass theme, Jam, ModernLyrics, FluidShader)
 │       └── res/             # Vector drawables, layouts, localized strings
 ├── desktop/                 # Native Electron JS desktop application
 │   ├── electron/            # Main process (local server, auto-updater, IPC handlers)
